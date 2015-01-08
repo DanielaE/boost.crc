@@ -23,6 +23,10 @@
 #include <boost/test/minimal.hpp>                // for main, etc.
 #include <boost/timer.hpp>                       // for boost::timer
 
+#ifdef BOOST_MSVC
+#  pragma warning(disable: 4127) // conditional expression is constant
+#endif
+
 #include <algorithm>  // for std::for_each, std::generate_n, std::count
 #include <climits>    // for CHAR_BIT
 #include <cstddef>    // for std::size_t
@@ -360,7 +364,7 @@ quick_crc32
     byte_type const * const  b_end = b_begin + byte_count;
     for ( byte_type const *p = b_begin ; p < b_end ; ++p )
     {
-        byte_type const  byte_index = *p ^ rem;
+        byte_type const  byte_index = static_cast<byte_type>(*p ^ rem);
         rem >>= CHAR_BIT;
         rem ^= crc_table[ byte_index ];
     }
