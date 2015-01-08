@@ -57,6 +57,10 @@ namespace boost { namespace detail {
 #define BOOST_ACRC_DUMMY_INIT       BOOST_ACRC_DUMMY_PARM_TYPE = 0
 #endif
 
+#ifdef BOOST_MSVC
+#  pragma warning(push)
+#  pragma warning(disable: 4800) // forcing value to bool 'true' or 'false' (performance warning)
+#endif
 
 namespace boost
 {
@@ -374,7 +378,7 @@ namespace detail
         BOOST_STATIC_CONSTANT( fast, high_bit_fast = base_type::high_bit_fast );
         #endif
 
-        BOOST_STATIC_CONSTANT( least, sig_bits = (~( least(0u) )) );
+        BOOST_STATIC_CONSTANT( least, sig_bits = least(~( least(0u) )) );
         BOOST_STATIC_CONSTANT( fast, sig_bits_fast = fast(sig_bits) );
 
     };  // boost::detail::mask_uint_t
@@ -397,7 +401,7 @@ namespace detail
         BOOST_STATIC_CONSTANT( fast, high_bit_fast = base_type::high_bit_fast );
         #endif
 
-        BOOST_STATIC_CONSTANT( least, sig_bits = (~( least(0u) )) );
+        BOOST_STATIC_CONSTANT( least, sig_bits = least(~( least(0u) )) );
         BOOST_STATIC_CONSTANT( fast, sig_bits_fast = fast(sig_bits) );
 
     };  // boost::detail::mask_uint_t
@@ -575,7 +579,7 @@ namespace detail
 
         // Compare a byte to the remainder's highest byte
         static  unsigned char  index( value_type rem, unsigned char x )
-            { return x ^ rem; }
+            { return static_cast<unsigned char>(x ^ rem); }
 
         // Shift out the remainder's highest byte
         static  value_type  shift( value_type rem )
@@ -1096,6 +1100,9 @@ augmented_crc
 
 }  // namespace boost
 
+#ifdef BOOST_MSVC
+#  pragma warning(pop)
+#endif
 
 // Undo header-private macros
 #undef BOOST_CRC_OPTIMAL_NAME
